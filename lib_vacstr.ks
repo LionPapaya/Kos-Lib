@@ -45,6 +45,7 @@ function execute_node{
        if vdot(dv0, nd:deltav) < 0
         {
             set Lastest_status to "End burn, remain dv " + round(nd:deltav:mag,1) + "m/s, vdot: " + round(vdot(dv0, nd:deltav),1).
+            
             lock throttle to 0.
             break.
             
@@ -63,8 +64,7 @@ function execute_node{
             set done to True.
         }
     }
-    unlock steering.
-    unlock throttle.
+    
     update_readouts().
     wait 1.
 

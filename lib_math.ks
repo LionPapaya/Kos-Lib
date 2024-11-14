@@ -1,3 +1,21 @@
+function remove_spaces {
+    parameter input_string.
+    
+    local result_string is "".
+    // Debugging: Log the input string
+    log "Testing remove_spaces function. Input: '" + input_string + "'" to "0:/log.txt".
+    
+    
+    for char in input_string {
+        if not(char = " ") {
+            set result_string to result_string + char.
+        }
+    }
+      // Debugging: Log the output string (result after removing spaces)
+    log "Result (no spaces): '" + result_string + "'" to "0:/log.txt".
+    
+    return result_string.
+}
 
 local num_lex   is lexicon().
 
@@ -11,9 +29,9 @@ num_lex:add("6", 6).
 num_lex:add("7", 7).
 num_lex:add("8", 8).
 num_lex:add("9", 9).
-
 function str_to_num {
   parameter s.
+  set s to remove_spaces(s).
 
   // Handle negative numbers
   if s:startswith("-") {
@@ -70,3 +88,59 @@ function calc_percentage {
 
     return percentage.
 }
+function calc_circle_distance{
+  parameter radius,degrees.
+  until radius >= 0 and radius < 360{
+        if radius >= 360 {
+            set radius to radius - 360.
+        } 
+        if radius < 0 {
+            set radius to radius + 360.
+        }   
+    }
+  local circumference is 2*(radius)*constant:pi.
+  return (circumference/360)*abs(degrees).
+}
+
+function num_to_str {
+ parameter
+  number,  //input number
+  ip,      //number of digits before the decimal point.
+  dp.      //number of decimal places
+
+ local string is "".
+ local padder is "".
+ local absNumber is abs(number).
+ local index is ip-1.
+ local firstNum is false.
+ until firstNum or index = 0 { // stop adding spacers when the first number is found
+  if mod(floor(absNumber/10^index),10) = 0 {
+   set padder to padder +" ".
+  }
+  else {
+   set firstNum to true.
+  }
+  set index to index-1.
+ }.
+ if dp = 0 {
+  set string to string +round(absNumber).
+ }.
+ else {
+//  set index to index-1.
+  set string to string +floor(absNumber).
+  set index to -1.
+  set string to string +".".
+  until index = -dp {
+   set string to string +mod(floor(absNumber/10^index),10).
+   set index to index-1.
+  }.
+  set string to string + mod(round(absNumber/10^index),10).
+ }.
+ if number < 0 {
+  set string to padder +"-" +string.
+ }
+ else {
+  set string to padder +" " +string.
+ }.
+ return string.
+}.

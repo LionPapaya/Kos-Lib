@@ -1,8 +1,15 @@
 function get_geoposition_along_heading {
     declare parameter starting_LATLNG, vec_heading, distance.
 
+     if vec_heading > 360 {
+        set vec_heading to vec_heading - 360.
+    } 
+    if vec_heading < 0 {
+        set vec_heading to vec_heading + 360.
+    }
+
     // Convert heading and lat/lng to radians
-    set vec_heading_rad to vec_heading * constant:degtorad.
+    set vec_heading_rad to vec_heading.
     set lat_rad to starting_LATLNG:lat * constant:degtorad.
     set lng_rad to starting_LATLNG:lng * constant:degtorad.
 
@@ -30,7 +37,15 @@ function get_geoposition_along_heading {
 }
 // Function to calculate geoposition on a circular heading
 function get_geoposition_on_circle {
-    declare parameter center_LATLNG, radius, circle_heading, circle_direction.
+    declare parameter center_LATLNG, radius,circle_direction, circle_heading.
+
+
+     if circle_heading > 360 {
+        set circle_heading  to circle_heading  - 360.
+    } 
+    if circle_heading  < 0 {
+        set circle_heading  to circle_heading  + 360.
+    }
 
     // Convert heading and lat/lng to radians
     set heading_rad to circle_heading * constant:degtorad.
@@ -66,16 +81,7 @@ function get_geoposition_on_circle {
     // Return the new geoposition as a LATLNG object
     return latlng(new_lat, new_lng).
 }
-function pitch_for_prograde {
-  parameter ves is ship,thing is "default".
 
-  local pointing is ves:prograde.
-  if not thing:istype("string") {
-    set pointing to type_to_vector(ves,thing).
-  }
-
-  return 90 - vang(ves:up:vector, pointing).
-}
 function calcdistance {
     parameter geopos1, geopos2.
     
@@ -101,9 +107,35 @@ function calcdistance {
     
     return distance.
 }
+function calcdistance_m {
+    parameter geopos1, geopos2.
+    
+    // Radius of Kerbin in km
+    set rad to 600.  
+    
+    // Convert latitudes and longitudes to radians and calculate deltas
+    set lat1_rad to geopos1:lat * constant:degtorad.
+    set lat2_rad to geopos2:lat * constant:degtorad.
+    set dlat to (geopos2:lat - geopos1:lat) * constant:degtorad.
+    set dlng to (geopos2:lng - geopos1:lng) * constant:degtorad.
+
+    
+
+    // Haversine formula components
+    set a to sin(dlat / 2) * sin(dlat / 2) +
+           cos(lat1_rad) * cos(lat2_rad) *
+           sin(dlng / 2) * sin(dlng / 2).
+    set c to 2 * arctan2(sqrt(a), sqrt(1 - a)).
+
+    // Return distance in km and log for debugging
+    set distance to rad * c.
+    
+    return distance*1000.
+}
 function heading_between {
-    parameter target_position.  // Target position as a vector (lat, long) in degrees.
     parameter current_position.
+    parameter target_position.  // Target position as a vector (lat, long) in degrees.
+    
     // Constants
     
     set deg_to_rad to constant:pi / 180.
@@ -240,3 +272,34 @@ function runway_start_distance_to_centerline {
     // Berechne die Distanz in Metern (Länge des orthogonalen Vektors)
     return orthogonal_vector:MAG * body:radius.  // Skaliere mit dem Planetenradius
 }
+function create_HAC{
+    set hac_ercl to get_geoposition_along_heading(runway_start,runway_heading+180,AVES["HacDistance"]).
+    set HAC to lex(
+    "HAC1",
+    get_geoposition_along_heading(hac_ercl,runway_heading+90,AVES["HacRadius"]),
+    "HAC2",
+    get_geoposition_along_heading(hac_ercl,runway_heading-90,AVES["HacRadius"])).
+
+
+    set hac_ercl_alt to calculate_vertical_glideslope_alt(AVES["HacDistance"]). 
+}
+//Hac 1 is clockwise /HAc 2 is anticlockwise
+function choose_hac{
+    local HAC_Distance is lex(
+        "Hac1",
+        calcdistance(
+        ship:geoposition,get_geoposition_on_circle(HAC["Hac1"],AVES["HacRadius"],"clockwise",compass_for())),
+        "Hac2",
+        calcdistance(
+        ship:geoposition,get_geoposition_on_circle(HAC["Hac2"],AVES["HacRadius"],"anticlockwise",compass_for()))).
+    if HAC_Distance["HAC1"] < HAC_Distance["HAC2"]{
+        set Active_HAC_entry to get_geoposition_on_circle(HAC["Hac1"],AVES["HacRadius"],"clockwise",compass_for()).
+        set Active_HAC to "HAC1".
+        set HAC_Direction to "Clockwise".
+    } else{
+        set Active_HAC_entry to get_geoposition_on_circle(HAC["Hac2"],AVES["HacRadius"],"anticlockwise",compass_for()).
+        set Active_HAC to "HAC2".
+        set HAC_Direction to "Anticlockwise".
+    }
+}
+

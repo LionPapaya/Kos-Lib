@@ -21,6 +21,16 @@ function compass_for_prograde {
     return result.
   }
 }
+function pitch_for_prograde {
+  parameter ves is ship,thing is "default".
+
+  local pointing is ves:velocity:surface:normalized.
+  if not thing:istype("string") {
+    set pointing to type_to_vector(ves,thing).
+  }
+
+  return 90 - vang(ves:up:vector, pointing).
+}
 
 function east_for {
   parameter ves is ship.

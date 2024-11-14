@@ -25,10 +25,10 @@ global location_constants is lex().
   kerbinLocations:add("l1_runway_27_start", Kerbin:GeoPositionLatLng(-.0501, -74.5076)).
   kerbinLocations:add("l2_runway_09_start", Kerbin:GeoPositionLatLng(-.0486, -74.7134)).
   kerbinLocations:add("l2_runway_27_start", Kerbin:GeoPositionLatLng(-.0501, -74.5046)).
-  kerbinLocations:add("island_runway_09_start", Kerbin:GeoPositionLatLng(-1.5177, -71.9663)).
-  kerbinLocations:add("island_runway_27_start", Kerbin:GeoPositionLatLng(-1.5158, -71.8524)).
-  kerbinLocations:add("desert_runway_36_start", Kerbin:GeoPositionLatLng(-6.5998, -144.0409)).
-  kerbinLocations:add("desert_runway_18_start", Kerbin:GeoPositionLatLng(-6.4480, -144.0383)).
+  kerbinLocations:add("Island_runway_09_start", Kerbin:GeoPositionLatLng(-1.5177, -71.9663)).
+  kerbinLocations:add("Island_runway_27_start", Kerbin:GeoPositionLatLng(-1.5158, -71.8524)).
+  kerbinLocations:add("Desert_runway_36_start", Kerbin:GeoPositionLatLng(-6.5998, -144.0409)).
+  kerbinLocations:add("Desert_runway_18_start", Kerbin:GeoPositionLatLng(-6.4480, -144.0383)).
   kerbinLocations:add("Kojave-Sands_runway_04_start", Kerbin:geoPositionLAtLNG(5.96055511995133,-142.048184851691)).
   kerbinLocations:add("Kojave-Sands_runway_22_start", Kerbin:geoPositionLAtLNG(6.13297199391895,-141.913140218446)).
   kerbinLocations:add("Baikerbanur_runway_20_start", Kerbin:geoPositionLAtLNG(20.7129411302474,-146.475570851677)).
@@ -73,7 +73,7 @@ global location_constants is lex().
   kerbinLocations:add("Polar-Alpha_runway_16_start", Kerbin:geoPositionLAtLNG(72.6254040968468, -78.6475159964753)).
   kerbinLocations:add("Sandy-Island_runway_04_start", Kerbin:geoPositionLAtLNG(-8.20789409639061, -42.4532574207131)).
   kerbinLocations:add("Sandy-Island_runway_22_start", Kerbin:geoPositionLAtLNG(-8.10433048889418, -42.3514625480154)).
-  log (kerbinLocations) to log.txt.
+  
   location_constants:add("runway_start",kerbinLocations["KSC_runway_09_start"]).
   location_constants:add("reverse_runway_start",kerbinLocations["KSC_runway_27_start"]).
 
@@ -103,6 +103,10 @@ global location_constants is lex().
   KerbinRunwayalt:add("Sandy-Island_runway", 25).
   KerbinRunwayalt:add("Desert_runway", 824).
   KerbinRunwayalt:add("Island_runway", 136).
+
+
+  
+
 }
 
 
